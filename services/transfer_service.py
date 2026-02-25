@@ -13,12 +13,9 @@ class TransferService:
     @staticmethod
     def _check_limits(cursor, from_account_id: int, amount: Decimal):
 
-        if amount > MAX_TRANSFER_PER_TX:
-            raise ValueError(
-                f"Per transfer limit exceeded. Max ₹{MAX_TRANSFER_PER_TX:.2f}"
-            )
-
-        cursor.execute("""
+        max_tx = current_app.config["MAX_TRANSFER_PER_TX"]
+        if amount > max_tx:
+            cursor.execute("""
             SELECT ISNULL(SUM(amount), 0)
             FROM transfers
             WHERE from_account_id = ?
@@ -29,11 +26,12 @@ class TransferService:
         todays_total = cursor.fetchone()[0] or 0
         todays_total = quantize_money(to_decimal(todays_total))
 
-        if todays_total + amount > MAX_TRANSFER_PER_DAY:
+        max_day = current_app.config["MAX_TRANSFER_PER_DAY"]
+        if todays_total + amount > max_day:
             raise ValueError(
                 f"Daily transfer limit exceeded. "
                 f"Today: ₹{todays_total:.2f}, "
-                f"Max/day: ₹{MAX_TRANSFER_PER_DAY:.2f}"
+                f"Max/day: ₹{max_day:.2f}"
             )
 
 
