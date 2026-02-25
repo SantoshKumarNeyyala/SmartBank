@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card p-4 shadow-sm">
+  <h3>Fraud Monitoring Dashboard</h3>
+
+  <table class="table table-bordered table-hover mt-3">
+    <thead class="table-dark">
+      <tr>
+        <th>Reference</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Amount</th>
+        <th>Risk Score</th>
+        <th>Status</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in transfers %}
+      {% set risk = t[4] or 0 %}
+      <tr
+        {% if risk > 60 %}
+          class="table-danger"
+        {% elif risk >= 30 %}
+          class="table-warning"
+        {% endif %}
+      >
+        <td>{{ t[0] }}</td>
+        <td>{{ t[1] }}</td>
+        <td>{{ t[2] }}</td>
+        <td>₹ {{ "%.2f"|format(t[3]) }}</td>
+        <td><b>{{ risk }}</b></td>
+        <td>{{ t[5] }}</td>
+        <td>{{ t[6] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

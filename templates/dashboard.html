@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="card p-4 shadow-sm mb-3">
+  <h3 class="mb-2">Welcome, {{ name }}</h3>
+
+  <div class="summary-grid">
+    <div class="card summary-card">
+      <div class="summary-title">Selected Balance</div>
+      <div class="summary-value balance-highlight">
+        ₹ <span id="balanceCounter">0</span>
+      </div>
+      <div class="muted">Live updated</div>
+    </div>
+
+    <div class="card summary-card">
+      <div class="summary-title">Accounts</div>
+      <div class="summary-value">{{ accounts|length }}</div>
+      <div class="muted">Active accounts</div>
+    </div>
+
+    <div class="card summary-card">
+      <div class="summary-title">Quick Actions</div>
+      <div class="summary-value">⚡</div>
+      <div class="muted">Deposit / Withdraw</div>
+    </div>
+
+    <div class="card summary-card">
+      <div class="summary-title">Security</div>
+      <div class="summary-value">🛡️</div>
+      <div class="muted">Fraud + OTP enabled</div>
+    </div>
+  </div>
+</div>
+
+<div class="card p-4 shadow-sm">
+  <h4>Your Accounts</h4>
+  <ul class="list-group">
+    
+    {% for a in accounts %}
+      {% set aid = a[0] %}
+      {% set acc_no = a[1] %}
+      {% set acc_type = a[2] %}
+      {% set acc_bal = a[3] %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <b>{{ acc_no }}</b> ({{ acc_type }})
+          {% if aid == selected_account_id %}
+            <span class="badge bg-success ms-2">Selected</span>
+          {% endif %}
+          <div class="muted">Balance: ₹ {{ "%.2f"|format(acc_bal) }}</div>
+        </div>
+        <div>
+          <a class="btn btn-sm btn-primary" href="{{ url_for('bank.select_account', account_id=aid) }}">Select</a>
+          <a class="btn btn-sm btn-danger" href="{{ url_for('bank.close_account', account_id=aid) }}">Close</a>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<script>
+(function(){
+  const target = Number("{{ '%.2f'|format(balance) }}");
+  const el = document.getElementById("balanceCounter");
+  if(!el) return;
+
+  const duration = 700;
+  const start = performance.now();
+
+  function tick(now){
+    const p = Math.min((now - start) / duration, 1);
+    const current = target * p;
+
+    el.textContent = current.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    if(p < 1) requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+})();
+</script>
+
+{% endblock %}

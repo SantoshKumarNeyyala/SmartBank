@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card p-4 shadow-sm">
+  <h3 class="mb-3">Open New Account</h3>
+
+  <form method="POST" action="{{ url_for('bank.create_account') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="mb-3">
+      <label class="form-label">Account Type</label>
+      <select class="form-select" name="account_type" required>
+        <option value="savings">Savings</option>
+        <option value="current">Current</option>
+      </select>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Create Account</button>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card p-4 shadow-sm">
+  <h3>Verify OTP</h3>
+
+  <form method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="mb-3">
+      <label>Enter OTP</label>
+      <input type="text" name="otp" class="form-control" required>
+    </div>
+    <button class="btn btn-primary">Verify</button>
+  </form>
+</div>
+
+{% endblock %}

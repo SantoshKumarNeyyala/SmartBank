@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block page_title %}Transactions{% endblock %}
+
+{% block content %}
+<h2>Transaction History</h2>
+<form method="GET" class="row g-2 mb-3">
+
+  <div class="col-md-2">
+    <select name="type" class="form-select">
+      <option value="">All</option>
+      <option value="deposit" {% if tx_type=='deposit' %}selected{% endif %}>Deposit</option>
+      <option value="withdraw" {% if tx_type=='withdraw' %}selected{% endif %}>Withdraw</option>
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <input type="date" name="from" value="{{ date_from }}" class="form-control">
+  </div>
+
+  <div class="col-md-3">
+    <input type="date" name="to" value="{{ date_to }}" class="form-control">
+  </div>
+
+  <div class="col-md-2">
+    <button class="btn btn-primary w-100">Filter</button>
+  </div>
+
+</form>
+<table border="1" cellpadding="8">
+  <tr>
+    <th>Type</th>
+    <th>Amount</th>
+    <th>Previous</th>
+    <th>New</th>
+    <th>Date</th>
+  </tr>
+
+  {% for t in txns %}
+  <tr>
+    <td>{{ t[0] }}</td>
+    <td>₹ {{ t[1] }}</td>
+    <td>₹ {{ t[2] }}</td>
+    <td>₹ {{ t[3] }}</td>
+    <td>{{ t[4] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+<div class="d-flex justify-content-between mt-3">
+
+  {% if page > 1 %}
+    <a class="btn btn-outline-secondary"
+       href="?page={{ page-1 }}&type={{ tx_type }}&from={{ date_from }}&to={{ date_to }}">
+       Previous
+    </a>
+  {% else %}
+    <div></div>
+  {% endif %}
+
+  <a class="btn btn-outline-secondary"
+     href="?page={{ page+1 }}&type={{ tx_type }}&from={{ date_from }}&to={{ date_to }}">
+     Next
+  </a>
+
+</div>
+
+{% endblock %}
