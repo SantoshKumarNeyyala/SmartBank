@@ -210,6 +210,22 @@ Returns JSON:
 
 ---
 
+## 📸 Screenshots
+
+### Dashboard
+![Dashboard](docs/screenshots/dashboard.png)
+
+### Fraud Monitoring
+![Fraud Dashboard](docs/screenshots/fraud_dashboard.png)
+
+### PDF Statement
+![PDF Statement](docs/screenshots/pdf_statement.png)
+
+### Analytics
+![Analytics](docs/screenshots/analytics.png)
+
+---
+
 # 👨‍💻 Author
 
 Santosh Kumar (Sandy)  
