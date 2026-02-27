@@ -7,7 +7,7 @@ from services.audit_service import AuditService
 from utils.request_meta import get_request_meta
 from services.audit_service import AuditService
 from utils.request_meta import get_request_meta
-
+from utils.password_utils import verify_password
 auth = Blueprint("auth", __name__)
 
 
@@ -33,9 +33,8 @@ def register():
             return redirect(url_for("auth.register"))
 
         # Hash password before saving
-        hashed_password = hash_password(password)
 
-        success = UserModel.create_user(full_name, email, hashed_password)
+        success = UserModel.create_user(full_name, email, password)
         if success:
             flash("Registration successful! Please login.", "success")
             return redirect(url_for("auth.login"))
@@ -60,13 +59,13 @@ def login():
     if request.method == "POST":
         email: str = (request.form.get("email") or "").strip().lower()
         password: str = request.form.get("password") or ""
-
+        
         user = UserModel.get_user_by_email(email)
         if not user:
             flash("Invalid email or password", "danger")
             ip, ua = get_request_meta()
             AuditService.log(
-                user_id=user_id,
+                user_id=None,
                 action="LOGIN_FAIL",
                 description=f"Wrong password attempt. Count={failed_attempts}",
                 ip=ip,

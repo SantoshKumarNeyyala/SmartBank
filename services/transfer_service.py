@@ -23,7 +23,8 @@ class TransferService:
               AND CAST(created_at AS DATE) = CAST(GETDATE() AS DATE)
         """, (from_account_id,))
 
-        todays_total = cursor.fetchone()[0] or 0
+        row = cursor.fetchone()
+        todays_total = row[0] if row and row[0] is not None else 0
         todays_total = quantize_money(to_decimal(todays_total))
 
         max_day = current_app.config["MAX_TRANSFER_PER_DAY"]

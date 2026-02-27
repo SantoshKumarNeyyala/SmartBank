@@ -1,10 +1,10 @@
 from database.connection import DatabaseConnection
 from utils.security import bcrypt
 
-
+print("DB HASH (first 20): ", str('stored_password')[:20])
 class UserModel:
     @staticmethod
-    def create_user(full_name, email, password):
+    def create_user(full_name, email, password, role = "user"):
         conn = None
         cursor = None
         try:
@@ -14,10 +14,10 @@ class UserModel:
             hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
             sql = """
-                INSERT INTO users (full_name, email, password_hash)
-                VALUES (?, ?, ?)
+                INSERT INTO users (full_name, email, password_hash, failed_login_attempts, is_locked, role)
+                VALUES (?, ?, ?, 0, 0, ?)
             """
-            cursor.execute(sql, (full_name, email, hashed_password))
+            cursor.execute(sql, (full_name, email, hashed_password, role))
             conn.commit()
             return True
 
